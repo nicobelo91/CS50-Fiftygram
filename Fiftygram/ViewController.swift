@@ -6,6 +6,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let context = CIContext()
     var original: UIImage!
 
+    // MARK: - Filters
+    
     @IBAction func applySepia() {
         if original == nil {
             return
@@ -36,7 +38,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         filter?.setValue(CIImage(image: original), forKey: kCIInputImageKey)
         display(filter: filter!)
     }
+    
+    @IBAction func applyInvert(_ sender: UIButton) {
+        if original == nil {
+            return
+        }
 
+        let filter = CIFilter(name: "CIColorInvert")
+        filter?.setValue(CIImage(image: original), forKey: kCIInputImageKey)
+        display(filter: filter!)
+    }
+    
+    
+    // MARK: - Choose Photo
+    
     @IBAction func choosePhoto(_ sender: UIBarButtonItem) {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             let picker = UIImagePickerController()
@@ -46,6 +61,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
 
+    // MARK: - Others
+    
     func display(filter: CIFilter) {
         let output = filter.outputImage!
         imageView.image = UIImage(cgImage: self.context.createCGImage(output, from: output.extent)!)
