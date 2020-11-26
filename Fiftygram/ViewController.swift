@@ -5,6 +5,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     let context = CIContext()
     var original: UIImage!
+    var processedImage: UIImage?
 
     // MARK: - Filters
     
@@ -60,7 +61,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             self.navigationController?.present(picker, animated: true, completion: nil)
         }
     }
+    
+    // MARK: - Save Photo
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            // we got back an error!
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        }
+    }
+    
+    @IBAction func savePhoto(_ sender: UIButton) {
+        UIImageWriteToSavedPhotosAlbum(imageView.image!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
 
+    
     // MARK: - Others
     
     func display(filter: CIFilter) {
